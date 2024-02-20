@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from gtts import gTTS
-from ultralytics import YOLO
+#from ultralytics import YOLO
 import streamlit as st
 import cv2
 import time
@@ -12,80 +12,39 @@ import os
 from PIL import Image
 import base64
 import random
-from utils import main_model,message,upload,process_image_with_yolo,generate_recipe
 
-heading_styles = '''
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+from utils1 import message,upload,process_image_with_yolo,generate_recipe
 
-        .glowing-heading {
-            font-family: 'Poppins', sans-serif;
-            font-size: 48px;
-            text-align: center;
-            animation: glowing 2s infinite;
-            color: #FF5733; /* Orange color */
-            text-shadow: 2px 2px 4px #333;
-        }
-
-        .sub-heading {
-            font-family: 'Quicksand', cursive;
-            font-size: 32px;
-            text-align: center;
-            animation: colorChange 4s infinite;
-            text-shadow: 1px 1px 2px #333;
-            color: #0099CC; /* Blue color */
-        }
-
-        @keyframes glowing {
-            0% { color: #FF5733; } /* Orange color */
-            25% { color: #FFFFFF; } /* White color */
-            50% { color: #128807; } /* Green color */
-            75% { color: #0000FF; } /* Blue color */
-            100% { color: #FF5733; } /* Orange color */
-        }
-
-        @keyframes colorChange {
-            0% { color: #0099CC; } /* Blue color */
-            25% { color: #FF5733; } /* Orange color */
-            50% { color: #66FF66; } /* Light Green color */
-            75% { color: #FFCC00; } /* Yellow color */
-            100% { color: #0099CC; } /* Blue color */
-        }
-    </style>
-'''
-
-# Set page config
-st.set_page_config(layout="wide", initial_sidebar_state="expanded", page_icon='🤖', page_title='Inclusive Technology')
-
-# Display the custom heading styles
-st.markdown(heading_styles, unsafe_allow_html=True)
-
-# Create the headings
-st.markdown(f'<p class="glowing-heading">🤖 From Bytes To Bites 🤖</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="sub-heading">Deep Learning and AI-Generated Recipes</p>', unsafe_allow_html=True)
-
-# Image
-st.image('working.jpg',use_column_width=True)
-
-
-
-       
-
+def set_background_image(img_path):
+    with open(img_path, "rb") as f:
+        img_data = f.read()# Use encode() for binary data
+    return base64.b64encode(img_data).decode()
  
-#sidebar_option = st.sidebar.radio("Select an option", ("Take picture for prediction"))
+img = set_background_image("D:\Streamlit\working (1).jpg")
+page_bg_img = f"""
+    <style>
+    [data-testid ="stApp"]{{
+        background-image: url("data:image/jpg;base64,{img}");
+        background-repeat: no-repeat; /* Prevents image repeating */
+        background-attachment: fixed; /* Makes image fixed */
+         background-position: center center;
+        background-size: cover; /* Makes image cover the entire viewport */
+        }}
+        </style>"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
+    # Replace "D:\Streamlit\working.jpg" with the actual path to your image
+img_path = "D:\Streamlit\working (1).jpg" 
+
+#image uplaod through camera.
 
 def main():
     
-    
-    
-    
-   
-    
-    if st.checkbox('Take a picture for prediction'):
-    
-        
-        image, original_image,image_filename= upload()
+    st.title("CULINARY COMPANION :cooking:")
+
+    if st.button('Take a Picture :camera:'):
+        picture =st.camera_input("vegetable image")
+        if picture:
+            image,original_image,image_filename=upload()
         if original_image is not None and image_filename is not None and len(image_filename)!=0 and st.checkbox('Prediction'):  # Check if original_image is not None
             st.info('Wait for the results...!')
                 #image1=cv2.imread(image)
@@ -131,18 +90,14 @@ def main():
                     st.balloons()
                     with st.spinner('Wait for the audio version................'):
                         time.sleep(3)
-                    st.audio(audio_path, format='audio/wav')
-                    
-                      
-                                                
+                    st.audio(audio_path, format='audio/wav')                                    
             else:
                 message()
-                
-        
             
-
-   
+            
+            
 if __name__ == '__main__':
     
    
     main()
+
